@@ -16,11 +16,14 @@ namespace TestAsyncApp
             try
             {
                 bool result = false;
-                var result1 = SecondBlock();
-                var result2 = SecondBlock();
 
-                await Task.WhenAll(result1, result2);
-                return result1.Result || result2.Result;
+                var testtask1 = SlowRepo();
+                var testtask2 = SlowRepo();
+                
+                //Do something else parallel
+
+                await Task.WhenAll(testtask1, testtask2);
+                return testtask1.Result || testtask2.Result;
             }
             catch (Exception e)
             {
@@ -30,15 +33,10 @@ namespace TestAsyncApp
             
         }
 
-        public static async Task<bool> SecondBlock()
+        public static async Task<bool> SlowRepo()
         {
-            return await ThirdBlock();
-        }
-
-        public static async Task<bool> ThirdBlock()
-        {
-            await Task.Delay(1000);
-            throw new Exception("some exception");
+            await Task.Delay(10000);
+            return true;
         }
     }
 }
